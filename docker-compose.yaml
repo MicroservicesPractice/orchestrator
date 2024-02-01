@@ -2,6 +2,8 @@ version: '3.8'
 
 x-all-services: &all-services
   AUTH_SERVICE: ${AUTH_SERVICE}
+  REGISTRATION_SERVICE: ${REGISTRATION_SERVICE}
+  USER_SERVICE: ${USER_SERVICE}
 
 services:
   nginx-gateway:
@@ -13,29 +15,10 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - ${AUTH_SERVICE}
-    environment:
-      AUTH_SERVICE_URL: ${AUTH_SERVICE}:${AUTH_SERVICE_PORT}
+      - ${REGISTRATION_SERVICE}
+      - ${USER_SERVICE}
     networks:
-      - auth_network
-
-  auth-service:
-    build:
-      context: ../${AUTH_SERVICE}
-      dockerfile: Dockerfile
-    ports:
-      - ${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}
-    # restart: unless-stopped
-    depends_on: 
-      - redis-whitelist
-      - postgres-db
-    environment:
-      <<: [*all-services]
-      REDIS_HOST: redis-whitelist
-      DB_HOST: postgres-db
-      ACCESS_TOKEN_PUBLIC_SECRET_PATH: /app/cert/access.pub
-      ACCESS_TOKEN_PRIVATE_SECRET_PATH: /app/cert/access
-    networks:
-      - auth_network
+      - shared_network
 
   postgres-db:
     image: postgres:16.1
@@ -43,27 +26,20 @@ services:
     ports:
       - 5432:5432
     volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgres_db_volume:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: example
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
       POSTGRES_PORT: 5432
+      DB_USER: admin
+      DB_PASS: 1111
+      DB_NAME_1: kek
+      DB_NAME_2: kek2
     networks:
-      - auth_network
+      - shared_network
 
-  redis-whitelist:
-    container_name: redis-whitelist
-    image: redis:7.0.11
-    ports:
-      - 6379:6379
-    command: redis-server --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    volumes: 
-      - redis-whitelist-volume:/data
-    networks:
-      - auth_network
-
-  pgadmin:
+  pgadmin4:
     image: dpage/pgadmin4
     container_name: pgadmin4
     # restart: always
@@ -76,15 +52,89 @@ services:
     depends_on:
       - postgres-db
     volumes:
-      - pgadmin_volume:/var/lib/pgadmin
+      - pgadmin4_volume:/var/lib/pgadmin
     networks:
-      - auth_network
+      - shared_network
+
+  auth-service:
+    build:
+      context: ../${AUTH_SERVICE}
+      dockerfile: Dockerfile
+    ports:
+      - ${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}
+    # restart: unless-stopped
+    depends_on: 
+      - redis-auth-service-whitelist
+      - postgres-db
+    environment:
+      <<: [*all-services]
+      REDIS_HOST: redis-auth-service-whitelist
+      DB_HOST: postgres-db
+      ACCESS_TOKEN_PUBLIC_SECRET_PATH: /app/cert/access.pub
+      ACCESS_TOKEN_PRIVATE_SECRET_PATH: /app/cert/access
+    networks:
+      - shared_network
+
+  redis-auth-service-whitelist:
+    container_name: redis-auth-service-whitelist
+    image: redis:7.0.11
+    ports:
+      - 6379:6379
+    command: redis-server --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - redis-auth-service-whitelist-volume:/data
+    networks:
+      - shared_network
+
+  registration-service:
+    build:
+      context: ../${REGISTRATION_SERVICE}
+      dockerfile: Dockerfile
+    ports:
+      - ${REGISTRATION_SERVICE_PORT}:${REGISTRATION_SERVICE_PORT}
+    # restart: unless-stopped
+    depends_on: 
+      - postgres-db
+    environment:
+      <<: [*all-services]
+      DB_HOST: postgres-db
+    networks:
+      - shared_network
+
+  user-service:
+    build:
+      context: ../${USER_SERVICE}
+      dockerfile: Dockerfile
+    ports:
+      - ${USER_SERVICE_PORT}:${USER_SERVICE_PORT}
+    # restart: unless-stopped
+    depends_on: 
+      - postgres-db
+    environment:
+      <<: [*all-services]
+      DB_HOST: postgres-db
+    networks:
+      - shared_network
+
+  rabbitmq:
+    image: rabbitmq:3.12.11-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=1234
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
 
 volumes:
   postgres_db_volume:
-  pgadmin_volume:
-  redis-whitelist-volume:
+  pgadmin4_volume:
+  redis-auth-service-whitelist-volume:
 
 networks:
-  auth_network:   
+  shared_network:   
     driver: bridge 

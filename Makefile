@@ -12,4 +12,16 @@ build: # Build or rebuild containers
 
 .PHONY: down
 down: # Stop docker containers
-	docker compose -f ./docker-compose.yaml down
+	docker compose -f ./docker-compose.yaml down 
+
+.PHONY: prune
+prune: # Stop docker containers
+	docker compose -f ./docker-compose.yaml down -v
+
+.PHONY: rm
+rm: # Stop docker containers
+	docker compose -f ./docker-compose.yaml rm --all
+
+.PHONY: db
+db: # Stop docker containers
+	docker exec -it postgres-db bash 

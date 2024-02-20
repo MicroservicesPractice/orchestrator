@@ -107,6 +107,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${USER_SERVICE_PORT}:${USER_SERVICE_PORT}
+      - ${GRPC_USER_SERVER_PORT}:${GRPC_USER_SERVER_PORT}
     # restart: unless-stopped
     depends_on: 
       - postgres-db

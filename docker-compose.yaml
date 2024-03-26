@@ -117,6 +117,18 @@ services:
     networks:
       - shared_network
 
+  notification-service:
+    build:
+      context: ../${NOTIFICATION_SERVICE}
+      dockerfile: Dockerfile
+    ports:
+      - ${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}
+    # restart: unless-stopped
+    environment:
+      <<: [*all-services]
+    networks:
+      - shared_network
+
   rabbitmq:
     image: rabbitmq:3.12.11-management
     hostname: rabbitmq

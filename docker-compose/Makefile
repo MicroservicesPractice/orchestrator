@@ -25,3 +25,11 @@ rm: # Stop docker containers
 .PHONY: db
 db: # Stop docker containers
 	docker exec -it postgres-db bash 
+
+.PHONY: installKind
+installKind: # install kind
+	go install sigs.k8s.io/kind@v0.22.0 
+
+.PHONY: createCluster
+createCluster: # create cluster with kind
+	kind create cluster 

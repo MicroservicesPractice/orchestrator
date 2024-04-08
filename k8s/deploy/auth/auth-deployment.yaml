@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  labels:
+    app: auth-deployment-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: k8s-auth-service:v1
+          ports:
+            - containerPort: 5001
+          envFrom:
+            - configMapRef:
+                name: auth-config
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 300m
+            limits:
+              memory: 200Mi
+              cpu: 300m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  type: ClusterIP
+  selector:
+    app: auth
+  ports:
+    - name: auth-port
+      port: 5001
+      targetPort: 5001

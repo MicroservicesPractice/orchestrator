@@ -15,5 +15,9 @@ setDevCtx: # create cluster with kind
 	 kubectl config set-context --current --namespace=dev
 
 .PHONY: applyAll
-applyAll: # create cluster with kind
-	 kubectl apply -f ./namespaces -f ./deploy/pg4admin -f ./deploy/postgres
+applyAll: # create cluster with kind 
+	 kubectl apply -f ./namespaces -f ./deploy/postgres -f ./ingress -f ./deploy/user
+
+.PHONY: showK8sImages
+showK8sImages: # create cluster with kind 
+	 docker container exec -it k8s-cluster-control-plane crictl images

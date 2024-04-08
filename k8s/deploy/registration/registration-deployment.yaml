@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registration-deployment
+  labels:
+    app: registration-deployment-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registration
+  template:
+    metadata:
+      labels:
+        app: registration
+    spec:
+      containers:
+        - name: registration
+          image: k8s-registration-service:v1
+          # command: ["sleep", "3600"]
+          ports:
+            - containerPort: 5002
+          envFrom:
+            - configMapRef:
+                name: registration-config
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 300m
+            limits:
+              memory: 200Mi
+              cpu: 300m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registration-service
+spec:
+  type: ClusterIP
+  selector:
+    app: registration
+  ports:
+    - name: registration-port
+      port: 5002
+      targetPort: 5002

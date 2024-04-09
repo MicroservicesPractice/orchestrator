@@ -5,7 +5,7 @@ metadata:
 data:
   SERVER_PORT: "5002"
   #
-  USER_SERVICE_HOST: user-service
+  USER_SERVICE_HOST: "user-service"
   USER_SERVICE_GRPC_PORT: "6003"
   #
   DB_PORT: "5432"

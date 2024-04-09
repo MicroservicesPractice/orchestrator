@@ -1,29 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-deployment
+  name: notification-deployment
   labels:
-    app: user-deployment-label
+    app: notification-deployment-label
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user
+      app: notification
   template:
     metadata:
       labels:
-        app: user
+        app: notification
     spec:
       containers:
-        - name: user
-          image: k8s-user-service:v1
+        - name: notification
+          image: k8s-notification-service:v1
           # command: ["sleep", "3600"]
           ports:
-            - containerPort: 5003
-            - containerPort: 6003
+            - containerPort: 5004
           envFrom:
             - configMapRef:
-                name: user-config
+                name: notification-config
           resources:
             requests:
               memory: 200Mi
@@ -36,15 +35,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: notification-service
 spec:
   type: ClusterIP
   selector:
-    app: user
+    app: notification
   ports:
-    - name: user-port
-      port: 5003
-      targetPort: 5003
-    - name: user-port-grpc
-      port: 6003
-      targetPort: 6003
+    - name: notification-port
+      port: 5004
+      targetPort: 5004

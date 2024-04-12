@@ -3,8 +3,7 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  POSTGRES_USER: "root"
-  POSTGRES_PASSWORD: "1234"
   POSTGRES_PORT: "5432"
+  POSTGRES_USER: "root"
   DB_USER: "admin"
   DB_PASS: "1111"

@@ -23,6 +23,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: registration-config
+            - configMapRef:
+                name: postgres-shared-config
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password-secret
+                  key: password
           resources:
             requests:
               memory: 200Mi

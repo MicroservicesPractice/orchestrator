@@ -3,7 +3,15 @@ kind: Pod
 metadata:
   name: network-test
 spec:
+  volumes:
+    - name: secret-volume
+      secret:
+        secretName: dotfile-secret
   containers:
-  - name: network-test
-    image: alpine:latest
-    command: ["sleep", "3600"] 
+    - name: network-test
+      image: alpine:latest
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: secret-volume
+          readOnly: true
+          mountPath: "/etc/secret-volume"

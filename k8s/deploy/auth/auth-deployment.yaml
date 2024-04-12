@@ -14,6 +14,10 @@ spec:
       labels:
         app: auth
     spec:
+      volumes:
+        - name: auth-secret-volume
+          secret:
+            secretName: access-token-secret
       containers:
         - name: auth
           image: k8s-auth-service:v1
@@ -22,6 +26,18 @@ spec:
           envFrom:
             - configMapRef:
                 name: auth-config
+            - configMapRef:
+                name: postgres-shared-config
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password-secret
+                  key: password
+          volumeMounts:
+            - name: auth-secret-volume
+              readOnly: true
+              mountPath: "/etc/auth-secret-volume"
           resources:
             requests:
               memory: 200Mi

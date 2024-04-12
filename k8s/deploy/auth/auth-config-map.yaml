@@ -5,11 +5,7 @@ metadata:
 data:
   SERVER_PORT: "5001"
 
-  DB_PORT: "5432"
-  DB_HOST: "postgres-service"
   DB_NAME: "user-service"
-  DB_USER: "root"
-  DB_PASSWORD: "1234"
 
   LOG_LEVEL: "4"
 
@@ -25,7 +21,7 @@ data:
   REDIS_PASSWORD: "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
 
   ACCESS_TOKEN_PUBLIC_SECRET_PATH: "/app/cert/access.pub"
-  ACCESS_TOKEN_PRIVATE_SECRET_PATH: "/app/cert/access"
+  ACCESS_TOKEN_PRIVATE_SECRET_PATH: "/etc/auth-secret-volume/.access"
   ACCESS_TOKEN_EXP_MIN: "3"
 
   REFRESH_TOKEN_SECRET: "refreshSecret"

@@ -6,11 +6,7 @@ data:
   SERVER_PORT: "5003"
   GRPC_SERVER_PORT: "6003"
   #
-  DB_PORT: "5432"
-  DB_HOST: "postgres-service"
   DB_NAME: "user-service"
-  DB_USER: "root"
-  DB_PASSWORD: "1234"
   #
   LOG_LEVEL: "4"
   GIN_MODE: "debug"

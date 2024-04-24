@@ -21,3 +21,7 @@ applyAll: # create cluster with kind
 .PHONY: showK8sImages
 showK8sImages: # create cluster with kind 
 	 docker container exec -it k8s-cluster-control-plane crictl images
+
+.PHONY: helmDebug
+helmDebug: # create cluster with kind 
+	 helm install helm-practice -f ./services/notification.yaml ./mychart --dry-run --debug

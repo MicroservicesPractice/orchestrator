@@ -25,3 +25,7 @@ showK8sImages: # create cluster with kind
 .PHONY: helmDebug
 helmDebug: # create cluster with kind 
 	 helm install helm-practice -f ./services/notification.yaml ./mychart --dry-run --debug
+
+.PHONY: helmInstall
+helmInstall: # create cluster with kind 
+	 helm install user-service ./mychart -f ./mychart/app/microservices/user.yaml

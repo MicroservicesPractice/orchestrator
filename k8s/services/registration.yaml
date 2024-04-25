@@ -1,0 +1,12 @@
+hasDbConfig: true
+
+service:
+  name: registration
+  port: 5002
+
+image:
+  name: k8s-registration-service
+  tag: v1
+
+replicas:
+  amount: 1

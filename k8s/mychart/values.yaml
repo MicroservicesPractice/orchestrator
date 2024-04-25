@@ -1,3 +1,7 @@
+hasDbConfig: false
+hasGrpcServer: false
+isAuth: false
+
 requests:
   memory: "200Mi"
   cpu: "300m"

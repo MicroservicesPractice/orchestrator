@@ -1,0 +1,14 @@
+hasGrpcServer: true
+hasDbConfig: true
+
+service:
+  name: user
+  port: 5003
+  grpcPort: 6003
+
+image:
+  name: k8s-user-service
+  tag: v1
+
+replicas:
+  amount: 1

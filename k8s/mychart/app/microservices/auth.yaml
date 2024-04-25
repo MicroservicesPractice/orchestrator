@@ -1,0 +1,13 @@
+hasDbConfig: true
+isAuth: true
+
+service:
+  name: auth
+  port: 5001
+
+image:
+  name: k8s-auth-service
+  tag: v1
+
+replicas:
+  amount: 1

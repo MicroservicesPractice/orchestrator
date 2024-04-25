@@ -1,0 +1,62 @@
+{{- define "mychart.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}-deployment
+  labels:
+    app: {{ .Values.service.name }}-deployment-label
+spec:
+  replicas: {{ .Values.replicas.amount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.service.name }}
+    spec:
+      {{- if .Values.isAuth }}
+      volumes:
+        - name: auth-secret-volume
+          secret:
+            secretName: access-token-secret
+      {{- end }}
+      containers:
+        - name: {{ .Values.service.name }}
+          image: {{ printf "%v:%v" .Values.image.name .Values.image.tag  }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          {{- if .Values.hasGrpcServer }}
+            - containerPort: {{ .Values.service.grpcPort }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.service.name }}-config
+          {{- if .Values.hasDbConfig }}
+            - configMapRef:
+                name: postgres-shared-config
+          {{- end }}
+          {{- if .Values.hasDbConfig }}
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password-secret
+                  key: password
+          {{- end }}
+          {{- if .Values.isAuth }}
+          volumeMounts:
+            - name: auth-secret-volume
+              readOnly: true
+              mountPath: "/etc/auth-secret-volume"
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.requests.memory | default "200Mi" }}
+              cpu: {{ .Values.requests.cpu | default "300m" }}
+            limits:
+              memory: {{ .Values.limits.memory | default "200Mi" }}
+              cpu: {{ .Values.limits.cpu | default "300m" }}
+
+{{- end -}}
+{{- template "mychart.deployment" . -}}

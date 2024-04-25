@@ -1,0 +1,22 @@
+{{- define "mychart.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}-service
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.service.name }}
+  ports:
+    - name: {{ .Values.service.name }}-port
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+  {{- if .Values.hasGrpcServer }}
+    - name: {{ .Values.service.name }}-port-grpc
+      port: {{ .Values.service.grpcPort }}
+      targetPort: {{ .Values.service.grpcPort }}
+  {{- end }}
+      
+{{- end -}}
+{{- template "mychart.service" . -}}
+

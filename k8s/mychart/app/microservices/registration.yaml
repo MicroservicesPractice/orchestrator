@@ -10,3 +10,14 @@ image:
 
 replicas:
   amount: 1
+
+env:
+  SERVER_PORT: "5002"
+  #
+  USER_SERVICE_HOST: "user-service"
+  USER_SERVICE_GRPC_PORT: "6003"
+  #
+  DB_NAME: "registration-service"
+  #
+  LOG_LEVEL: "4"
+  GIN_MODE: "debug"

@@ -1,0 +1,14 @@
+{{- define "mychart.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.service.name }}-config
+data:
+  SERVER_PORT: {{ quote .Values.service.port }}
+  {{- range $key, $value := .Values.env }}
+  {{ $key }}: {{ quote $value }}
+  {{- end }}
+      
+{{- end -}}
+{{- template "mychart.configmap" . -}}
+

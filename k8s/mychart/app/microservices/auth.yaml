@@ -11,3 +11,26 @@ image:
 
 replicas:
   amount: 1
+
+env:
+  DB_NAME: "user-service"
+
+  LOG_LEVEL: "4"
+
+  # change to localhost you you run registration-service without docker
+  USER_SERVICE_HOST: "user-service"
+  USER_SERVICE_GRPC_PORT: "6003"
+
+  GIN_MODE: "debug"
+  # GIN_MODE: "release"
+
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
+
+  ACCESS_TOKEN_PUBLIC_SECRET_PATH: "/app/cert/access.pub"
+  ACCESS_TOKEN_PRIVATE_SECRET_PATH: "/etc/auth-secret-volume/.access"
+  ACCESS_TOKEN_EXP_MIN: "3"
+
+  REFRESH_TOKEN_SECRET: "refreshSecret"
+  REFRESH_TOKEN_EXP_MIN: "5" 

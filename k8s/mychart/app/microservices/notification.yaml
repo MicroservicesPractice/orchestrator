@@ -8,3 +8,7 @@ image:
 
 replicas:
   amount: 1
+
+env:
+  RABBIT_MQ_CONNECTION: "amqp://root:1234@rabbitmq-service:5672/"
+  LOG_LEVEL: "4"

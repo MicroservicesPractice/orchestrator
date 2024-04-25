@@ -12,3 +12,11 @@ image:
 
 replicas:
   amount: 1
+
+env:
+  GRPC_SERVER_PORT: "6003"
+  #
+  DB_NAME: "user-service"
+  #
+  LOG_LEVEL: "4"
+  GIN_MODE: "debug"
